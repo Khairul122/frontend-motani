@@ -36,7 +36,7 @@ function Sidebar() {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Daftar Konsumen', icon: <PeopleIcon />, path: '/daftar-konsumen' },
-    { text: 'Daftar User', icon: <PersonIcon />, path: '/daftar-user' },
+    { text: 'Data User', icon: <PersonIcon />, path: '/data-user' },
     { text: 'Informasi', icon: <InfoIcon />, path: '/informasi' },
     { text: 'Produk', icon: <StoreIcon />, path: '/produk' },
     { text: 'Pesanan Masuk', icon: <ShoppingCartIcon />, path: '/pesanan-masuk' },

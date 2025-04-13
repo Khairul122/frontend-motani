@@ -1,19 +1,25 @@
+// src/Layout/Navbar.js
 import React, { useState } from 'react';
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  Box,
-  Avatar
+  AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Box, Avatar
 } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import { useLocation } from 'react-router-dom';
 
 function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {};
+  const location = useLocation();
+
+  const pageTitle = () => {
+    switch (location.pathname) {
+      case '/dashboard': return 'Dashboard';
+      case '/daftar-konsumen': return 'Daftar Konsumen';
+      case '/data-user': return 'Data User';
+      case '/informasi': return 'Informasi';
+      default: return 'Halaman';
+    }
+  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -31,13 +37,13 @@ function Navbar() {
   return (
     <AppBar position="static" sx={{ backgroundColor: '#4caf50' }}>
       <Toolbar sx={{ justifyContent: 'space-between', px: { xs: 1, sm: 2 } }}>
-        <Typography 
-          variant="h6" 
-          noWrap 
+        <Typography
+          variant="h6"
+          noWrap
           component="div"
           sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}
         >
-          Dashboard
+          {pageTitle()}
         </Typography>
 
         <Box>

@@ -20,6 +20,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast, ToastContainer } from "react-toastify";
@@ -67,26 +68,36 @@ function DaftarKonsumen() {
   };
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return '-';
-  
+    if (!dateStr) return "-";
+
     const bulanIndo = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
     ];
-  
-    const [day, month, year] = dateStr.split('-');
-    
+
+    const [day, month, year] = dateStr.split("-");
+
     const bulan = bulanIndo[parseInt(month, 10) - 1];
-  
+
     return `${day} ${bulan} ${year}`;
   };
-  
+
   const handleEditOpen = (item) => {
     if (!item.id_pembeli) {
       toast.error("ID Pembeli tidak valid atau tidak ditemukan");
       return;
     }
-    
+
     fetch(API.PEMBELI_BY_ID(item.id_pembeli), {
       method: "GET",
       headers: {
@@ -122,7 +133,7 @@ function DaftarKonsumen() {
       toast.error("ID Pembeli tidak valid. Tidak dapat mengupdate data.");
       return;
     }
-    
+
     const { id_pembeli, ...bodyData } = selected;
 
     fetch(API.PEMBELI_UPDATE(id_pembeli), {
@@ -152,7 +163,7 @@ function DaftarKonsumen() {
       toast.error("ID Pembeli tidak valid. Tidak dapat menghapus data.");
       return;
     }
-    
+
     if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
       fetch(API.PEMBELI_DELETE(id), {
         method: "DELETE",
@@ -172,7 +183,14 @@ function DaftarKonsumen() {
   return (
     <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
       <Sidebar />
-      <Box sx={{ flexGrow: 1, backgroundColor: "#f5f5f5", minHeight: "100vh", width: "100%" }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          backgroundColor: "#f5f5f5",
+          minHeight: "100vh",
+          width: "100%",
+        }}
+      >
         <Navbar />
         <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
           <Typography variant="h6" gutterBottom sx={{ mb: { xs: 1, sm: 2 } }}>
@@ -301,6 +319,29 @@ function DaftarKonsumen() {
             <TextField
               fullWidth
               margin="normal"
+              label="Tanggal Lahir"
+              name="tgl_lahir"
+              type="date"
+              value={selected.tgl_lahir || ""}
+              onChange={handleEditChange}
+            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="jk-label">Jenis Kelamin</InputLabel>
+              <Select
+                labelId="jk-label"
+                id="jk"
+                name="jk"
+                value={selected.jk || ""}
+                label="Jenis Kelamin"
+                onChange={handleEditChange}
+              >
+                <MenuItem value="Pria">Pria</MenuItem>
+                <MenuItem value="Wanita">Wanita</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              fullWidth
+              margin="normal"
               label="Email"
               name="email"
               value={selected.email || ""}
@@ -315,8 +356,8 @@ function DaftarKonsumen() {
           </DialogActions>
         </Dialog>
 
-        <ToastContainer 
-          position="top-right" 
+        <ToastContainer
+          position="top-right"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop
