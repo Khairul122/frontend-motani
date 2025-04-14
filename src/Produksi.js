@@ -148,7 +148,7 @@ function Produksi() {
                   <TableHead>
                     <TableRow>
                       <TableCell>No</TableCell>
-                      <TableCell>ID Produk</TableCell>
+                      <TableCell>Nama Produk</TableCell>
                       <TableCell>Tanggal Panen</TableCell>
                       <TableCell>Tanggal Roasting</TableCell>
                       <TableCell>Jumlah</TableCell>
