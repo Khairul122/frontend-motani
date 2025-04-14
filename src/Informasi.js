@@ -94,11 +94,10 @@ function Informasi() {
 
   const fetchDetailData = (id) => {
     setLoading(true);
-    // Remove the slash before id to avoid double slash
-    fetch(`${API.INFORMASI}${id}`)
+    fetch(`${API.INFORMASI}/${id}`)
       .then((res) => res.json())
       .then((res) => {
-        console.log("Detail data response:", res);
+        console.log("Detail data response:", res); // Tambahkan log untuk debugging
         setDetailData(res);
         setDetailOpen(true);
         setLoading(false);

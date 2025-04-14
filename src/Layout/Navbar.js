@@ -17,6 +17,8 @@ function Navbar() {
       case '/daftar-konsumen': return 'Daftar Konsumen';
       case '/data-user': return 'Data User';
       case '/informasi': return 'Informasi';
+      case '/logistik': return 'Logistik';
+      case '/produk': return 'Produk';
       default: return 'Halaman';
     }
   };
@@ -77,3 +79,4 @@ function Navbar() {
 }
 
 export default Navbar;
+

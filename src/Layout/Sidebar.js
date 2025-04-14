@@ -23,6 +23,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
+import { BookOnline } from '@mui/icons-material';
 
 function Sidebar() {
   const theme = useTheme();
@@ -36,11 +37,14 @@ function Sidebar() {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Daftar Konsumen', icon: <PeopleIcon />, path: '/daftar-konsumen' },
+    { text: 'Data Logistik', icon: <PersonIcon />, path: '/logistik' },
     { text: 'Data User', icon: <PersonIcon />, path: '/data-user' },
     { text: 'Informasi', icon: <InfoIcon />, path: '/informasi' },
     { text: 'Produk', icon: <StoreIcon />, path: '/produk' },
+    { text: 'Data Produksi', icon: <BookOnline />, path: '/produksi' },
     { text: 'Pesanan Masuk', icon: <ShoppingCartIcon />, path: '/pesanan-masuk' },
     { text: 'Laporan', icon: <AssessmentIcon />, path: '/laporan' },
+    
   ];
 
   const sidebarContent = (

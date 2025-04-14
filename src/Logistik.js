@@ -1,3 +1,4 @@
+// src/Logistik.js
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -19,7 +20,6 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast, ToastContainer } from "react-toastify";
@@ -28,7 +28,7 @@ import Navbar from "./Layout/Navbar";
 import Sidebar from "./Layout/Sidebar";
 import API from "./Api";
 
-function DaftarKonsumen() {
+function Logistik() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -38,21 +38,15 @@ function DaftarKonsumen() {
 
   const fetchData = () => {
     setLoading(true);
-    fetch(API.PEMBELI, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(API.LOGISTIK)
       .then((res) => res.json())
       .then((res) => {
         setData(res);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Error fetching data:", err);
+      .catch(() => {
+        toast.error("Gagal mengambil data logistik");
         setLoading(false);
-        toast.error("Gagal mengambil data pembeli");
       });
   };
 
@@ -66,178 +60,101 @@ function DaftarKonsumen() {
     setPage(0);
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "-";
-
-    const bulanIndo = [
-      "Januari",
-      "Februari",
-      "Maret",
-      "April",
-      "Mei",
-      "Juni",
-      "Juli",
-      "Agustus",
-      "September",
-      "Oktober",
-      "November",
-      "Desember",
-    ];
-
-    const [day, month, year] = dateStr.split("-");
-
-    const bulan = bulanIndo[parseInt(month, 10) - 1];
-
-    return `${day} ${bulan} ${year}`;
-  };
-
   const handleEditOpen = (item) => {
-    if (!item.id_pembeli) {
-      toast.error("ID Pembeli tidak valid atau tidak ditemukan");
-      return;
-    }
-
-    fetch(API.PEMBELI_BY_ID(item.id_pembeli), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(API.LOGISTIK_BY_ID(item.id))
       .then((res) => res.json())
       .then((detail) => {
-        if (detail && detail.nama) {
-          setSelected(detail);
-          setOpen(true);
-        } else {
-          toast.error("Data kosong atau tidak valid.");
-        }
+        setSelected(detail);
+        setOpen(true);
       })
-      .catch((err) => {
-        console.error("Gagal mengambil detail pembeli:", err);
-        toast.error("Gagal memuat data pembeli");
-      });
+      .catch(() => toast.error("Gagal mengambil detail logistik"));
   };
 
   const handleEditClose = () => {
-    setSelected({});
     setOpen(false);
+    setSelected({});
   };
 
   const handleEditChange = (e) => {
-    setSelected((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setSelected({ ...selected, [e.target.name]: e.target.value });
   };
 
   const handleEditSubmit = () => {
-    if (!selected.id_pembeli) {
-      toast.error("ID Pembeli tidak valid. Tidak dapat mengupdate data.");
-      return;
-    }
+    const { id, ...payload } = selected;
 
-    const { id_pembeli, ...bodyData } = selected;
-
-    fetch(API.PEMBELI_UPDATE(id_pembeli), {
+    fetch(API.LOGISTIK_UPDATE(id), {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(bodyData),
+      body: JSON.stringify(payload),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Update gagal");
-        return res.json();
-      })
+      .then((res) => res.json())
       .then(() => {
         fetchData();
         handleEditClose();
         toast.success("Data berhasil diperbarui");
       })
-      .catch((err) => {
-        console.error("Error updating data:", err);
-        toast.error("Gagal memperbarui data");
-      });
+      .catch(() => toast.error("Gagal memperbarui data logistik"));
   };
 
   const handleDelete = (id) => {
-    if (!id) {
-      toast.error("ID Pembeli tidak valid. Tidak dapat menghapus data.");
-      return;
-    }
-
     if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      fetch(API.PEMBELI_DELETE(id), {
+      fetch(API.LOGISTIK_DELETE(id), {
         method: "DELETE",
       })
         .then((res) => {
-          if (!res.ok) throw new Error("Gagal hapus");
+          if (!res.ok) throw new Error();
           fetchData();
           toast.success("Data berhasil dihapus");
         })
-        .catch((err) => {
-          console.error("Error deleting data:", err);
-          toast.error("Gagal menghapus data");
-        });
+        .catch(() => toast.error("Gagal menghapus data logistik"));
     }
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
+    <Box sx={{ display: "flex" }}>
       <Sidebar />
-      <Box
-        sx={{
-          flexGrow: 1,
-          backgroundColor: "#f5f5f5",
-          minHeight: "100vh",
-          width: "100%",
-        }}
-      >
+      <Box sx={{ flexGrow: 1, backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
         <Navbar />
         <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
-          <Typography variant="h6" gutterBottom sx={{ mb: { xs: 1, sm: 2 } }}>
-            Daftar Konsumen
+          <Typography variant="h6" gutterBottom>
+            Data Logistik
           </Typography>
           {loading ? (
             <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
               <CircularProgress />
             </Box>
           ) : (
-            <Paper sx={{ overflow: "hidden" }}>
-              <TableContainer sx={{ maxHeight: { xs: 300, sm: 400, md: 600 } }}>
-                <Table stickyHeader>
+            <Paper>
+              <TableContainer>
+                <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell>No</TableCell>
                       <TableCell>Nama</TableCell>
-                      <TableCell>No. Telepon</TableCell>
-                      <TableCell>Kecamatan</TableCell>
+                      <TableCell>No HP</TableCell>
                       <TableCell>Alamat</TableCell>
-                      <TableCell>Kode Pos</TableCell>
-                      <TableCell>Tgl. Lahir</TableCell>
-                      <TableCell>Jenis Kelamin</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell>Tanggal Bergabung</TableCell>
+                      <TableCell>Nama Toko</TableCell>
+                      <TableCell>Latitude</TableCell>
+                      <TableCell>Longitude</TableCell>
+                      <TableCell>Status</TableCell>
                       <TableCell>Aksi</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {data
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((item, index) => (
-                        <TableRow key={item.id_pembeli || index}>
-                          <TableCell>
-                            {page * rowsPerPage + index + 1}
-                          </TableCell>
-                          <TableCell>{item.nama || "-"}</TableCell>
-                          <TableCell>{item.no_telp || "-"}</TableCell>
-                          <TableCell>{item.kecamatan || "-"}</TableCell>
-                          <TableCell>{item.alamat || "-"}</TableCell>
-                          <TableCell>{item.kodepos || "-"}</TableCell>
-                          <TableCell>{item.tgl_lahir || "-"}</TableCell>
-                          <TableCell>{item.jk || "-"}</TableCell>
-                          <TableCell>{item.email || "-"}</TableCell>
-                          <TableCell>{formatDate(item.tgl_create)}</TableCell>
+                        <TableRow key={item.id}>
+                          <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                          <TableCell>{item.nama}</TableCell>
+                          <TableCell>{item.no_hp}</TableCell>
+                          <TableCell>{item.alamat}</TableCell>
+                          <TableCell>{item.nama_toko || "-"}</TableCell>
+                          <TableCell>{item.lat}</TableCell>
+                          <TableCell>{item.lng}</TableCell>
+                          <TableCell>{item.status}</TableCell>
                           <TableCell>
                             <IconButton
                               color="primary"
@@ -249,7 +166,7 @@ function DaftarKonsumen() {
                             <IconButton
                               color="error"
                               size="small"
-                              onClick={() => handleDelete(item.id_pembeli)}
+                              onClick={() => handleDelete(item.id)}
                             >
                               <DeleteIcon fontSize="small" />
                             </IconButton>
@@ -266,14 +183,13 @@ function DaftarKonsumen() {
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={[5, 10, 25]}
               />
             </Paper>
           )}
         </Box>
 
         <Dialog open={open} onClose={handleEditClose} fullWidth maxWidth="sm">
-          <DialogTitle>Edit Konsumen</DialogTitle>
+          <DialogTitle>Edit Logistik</DialogTitle>
           <DialogContent>
             <TextField
               fullWidth
@@ -286,17 +202,9 @@ function DaftarKonsumen() {
             <TextField
               fullWidth
               margin="normal"
-              label="No. Telepon"
-              name="no_telp"
-              value={selected.no_telp || ""}
-              onChange={handleEditChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Kecamatan"
-              name="kecamatan"
-              value={selected.kecamatan || ""}
+              label="No HP"
+              name="no_hp"
+              value={selected.no_hp || ""}
               onChange={handleEditChange}
             />
             <TextField
@@ -310,40 +218,33 @@ function DaftarKonsumen() {
             <TextField
               fullWidth
               margin="normal"
-              label="Kode Pos"
-              name="kodepos"
-              value={selected.kodepos || ""}
+              label="Nama Toko"
+              name="nama_toko"
+              value={selected.nama_toko || ""}
               onChange={handleEditChange}
             />
             <TextField
               fullWidth
               margin="normal"
-              label="Tanggal Lahir"
-              name="tgl_lahir"
-              type="date"
-              value={selected.tgl_lahir || ""}
+              label="Latitude"
+              name="lat"
+              value={selected.lat || ""}
               onChange={handleEditChange}
             />
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="jk-label">Jenis Kelamin</InputLabel>
-              <Select
-                labelId="jk-label"
-                id="jk"
-                name="jk"
-                value={selected.jk || ""}
-                label="Jenis Kelamin"
-                onChange={handleEditChange}
-              >
-                <MenuItem value="Pria">Pria</MenuItem>
-                <MenuItem value="Wanita">Wanita</MenuItem>
-              </Select>
-            </FormControl>
             <TextField
               fullWidth
               margin="normal"
-              label="Email"
-              name="email"
-              value={selected.email || ""}
+              label="Longitude"
+              name="lng"
+              value={selected.lng || ""}
+              onChange={handleEditChange}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Status"
+              name="status"
+              value={selected.status || ""}
               onChange={handleEditChange}
             />
           </DialogContent>
@@ -371,4 +272,4 @@ function DaftarKonsumen() {
   );
 }
 
-export default DaftarKonsumen;
+export default Logistik;
