@@ -1,4 +1,3 @@
-// src/Informasi.js
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -35,7 +34,6 @@ import Sidebar from "./Layout/Sidebar";
 import Navbar from "./Layout/Navbar";
 
 function Informasi() {
-  // States untuk informasi
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -48,12 +46,10 @@ function Informasi() {
     foto: null,
   });
 
-  // States untuk detail view
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
   const [tabValue, setTabValue] = useState(0);
 
-  // States untuk kalender panen
   const [kalenderOpen, setKalenderOpen] = useState(false);
   const [kalenderEditMode, setKalenderEditMode] = useState(false);
   const [selectedKalender, setSelectedKalender] = useState(null);
@@ -64,7 +60,6 @@ function Informasi() {
     catatan: "",
   });
 
-  // States untuk prediksi permintaan
   const [prediksiOpen, setPrediksiOpen] = useState(false);
   const [prediksiEditMode, setPrediksiEditMode] = useState(false);
   const [selectedPrediksi, setSelectedPrediksi] = useState(null);
@@ -77,7 +72,6 @@ function Informasi() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Fungsi fetch data
   const fetchData = () => {
     setLoading(true);
     fetch(API.INFORMASI)
@@ -97,7 +91,7 @@ function Informasi() {
     fetch(`${API.INFORMASI}/${id}`)
       .then((res) => res.json())
       .then((res) => {
-        console.log("Detail data response:", res); // Tambahkan log untuk debugging
+        console.log("Detail data response:", res);
         setDetailData(res);
         setDetailOpen(true);
         setLoading(false);
@@ -113,7 +107,6 @@ function Informasi() {
     fetchData();
   }, []);
 
-  // Handlers untuk informasi
   const handleOpen = (item = null) => {
     if (item) {
       setEditMode(true);
@@ -184,12 +177,10 @@ function Informasi() {
     }
   };
 
-  // Handlers untuk tabs
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  // Handlers untuk kalender panen
   const handleKalenderChange = (e) => {
     const { name, value } = e.target;
     setKalenderForm((prev) => ({ ...prev, [name]: value }));
@@ -267,7 +258,6 @@ function Informasi() {
     }
   };
 
-  // Handlers untuk prediksi permintaan
   const handlePrediksiChange = (e) => {
     const { name, value } = e.target;
     setPrediksiForm((prev) => ({ ...prev, [name]: value }));
@@ -333,7 +323,6 @@ function Informasi() {
     }
   };
 
-  // Fungsi helper
   const formatDate = (dateString) => {
     if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString("id-ID", {
@@ -359,7 +348,6 @@ function Informasi() {
       >
         <Navbar />
 
-        {/* Header */}
         <Box
           display="flex"
           justifyContent="space-between"
@@ -384,7 +372,6 @@ function Informasi() {
           </Button>
         </Box>
 
-        {/* Daftar Informasi */}
         <Box sx={{ width: "100%", px: 2 }}>
           {loading ? (
             <Box display="flex" justifyContent="center" mt={4}>
@@ -496,7 +483,6 @@ function Informasi() {
           )}
         </Box>
 
-        {/* Modal Tambah/Edit Informasi */}
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
           <DialogTitle
             sx={{
@@ -593,7 +579,6 @@ function Informasi() {
           </DialogActions>
         </Dialog>
 
-        {/* Modal Detail Informasi */}
         <Dialog
           open={detailOpen}
           onClose={handleDetailClose}
@@ -684,7 +669,6 @@ function Informasi() {
                   />
                 </Tabs>
 
-                {/* Tab Panel Kalender Panen */}
                 {tabValue === 0 && (
                   <Box>
                     <Box display="flex" justifyContent="flex-end" mb={2}>
@@ -724,7 +708,6 @@ function Informasi() {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {/* Cek struktur data dan pastikan properti kalender_panen tersedia */}
                           {detailData?.kalender_panen &&
                           detailData.kalender_panen.length > 0 ? (
                             detailData.kalender_panen.map((item) => (
@@ -806,7 +789,6 @@ function Informasi() {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {/* Cek struktur data dan pastikan properti prediksi_permintaan tersedia */}
                           {detailData?.prediksi_permintaan &&
                           detailData.prediksi_permintaan.length > 0 ? (
                             detailData.prediksi_permintaan.map((item) => (
@@ -862,7 +844,6 @@ function Informasi() {
           )}
         </Dialog>
 
-        {/* Modal Tambah/Edit Kalender Panen */}
         <Dialog
           open={kalenderOpen}
           onClose={handleKalenderClose}
@@ -949,7 +930,6 @@ function Informasi() {
           </DialogActions>
         </Dialog>
 
-        {/* Modal Tambah/Edit Prediksi Permintaan */}
         <Dialog
           open={prediksiOpen}
           onClose={handlePrediksiClose}

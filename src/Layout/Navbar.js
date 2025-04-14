@@ -1,4 +1,3 @@
-// src/Layout/Navbar.js
 import React, { useState } from 'react';
 import {
   AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Box, Avatar
